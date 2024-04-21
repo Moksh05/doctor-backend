@@ -11,34 +11,47 @@ const booking = await Booking.findOne({ user : req.body.user , appointmentDate :
 
 if(booking != null){
     res.status(200).json({succcess:true, message:"You already have a booking at this time", data: booking})
-}
-const newbooking = new Booking(req.body)
-try{
-    console.log(req.body.doctor)
-    const savedBooking = await newbooking.save()
-    //console.log(savedReview)
-    await Doctor.findByIdAndUpdate(req.body.doctor,{
-        $push:{appointments: savedBooking._id}
-    })
-    await User.findByIdAndUpdate(req.userId,{
-        $push:{appointments: savedBooking._id}
-    })
-    res.status(200).json({succcess:true, message:"Booking Scheduled", data: savedBooking})
-}catch(e){
-    res.status(500).json({success:false, message: e})
-}
-}
-
-
-export const getMyAppointments = async(req,res)=>{
+}else{
+    const newbooking = new Booking(req.body)
     try{
-    const bookings = await Booking.find({user:req.userId})
-
-    // const doctorIds = bookings.map(el=>el.doctor.id)
-
-    //const doctors = await Doctor.find({_id: {$in:doctorIds}}.select('~password'))
-    res.status(200).json({success:true,message:'Appointments are getting',data:doctors})
-    }catch(err){
-        res.status(500).json({success:false, message:'Something went wrong'})
+        console.log(req.body.doctor)
+        const savedBooking = await newbooking.save()
+        //console.log(savedReview)
+        await Doctor.findByIdAndUpdate(req.body.doctor,{
+            $push:{appointments: savedBooking._id}
+        })
+        await User.findByIdAndUpdate(req.userId,{
+            $push:{appointments: savedBooking._id}
+        })
+        res.status(200).json({succcess:true, message:"Booking Scheduled", data: savedBooking})
+    }catch(e){
+        console.log(e)
+        //res.status(500).json({success:false, message: e})
     }
 }
+
+}
+
+export const changeStatus = async (req, res, next) => {
+    try {
+        const bookingId = req.params.bookingId;
+        const newStatus = req.body.status;
+
+        
+        const booking = findOne({_id :bookingId});
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        booking.status = newStatus;
+
+        return res.status(200).json({ message: 'Booking status updated successfully', booking });
+    } catch (error) {
+        
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+

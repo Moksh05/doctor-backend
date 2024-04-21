@@ -3,6 +3,7 @@ import { updateDoctor,deleteDoctor,getSingleDoctor,getAllDoctors,getDoctorProfil
 import { authenticate, restrict } from '../Auth/verifyToken.js';
 import reviewRouter from './review.js'
 import bookingRouter from './booking.js'
+import { changeStatus } from '../Controllers/bookingController.js';
 const router = express.Router()
 router.use('/:doctorId/reviews',reviewRouter)
 router.use('/:doctorId/booking',bookingRouter)

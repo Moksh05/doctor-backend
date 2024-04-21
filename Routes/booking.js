@@ -1,8 +1,8 @@
 import express from "express";
-import { scheduleBooking } from "../Controllers/bookingController.js";
+import { changeStatus, scheduleBooking } from "../Controllers/bookingController.js";
 import { authenticate, restrict } from "../Auth/verifyToken.js";
 import { getMyAppointments } from "../Controllers/userController.js";
 
 const router = express.Router({mergeParams:true})
-router.route('/').get(getMyAppointments).post(authenticate,restrict(['patient']),scheduleBooking)
+router.route('/').get(getMyAppointments)
 export default router
