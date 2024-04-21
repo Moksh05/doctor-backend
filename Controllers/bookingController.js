@@ -34,17 +34,22 @@ if(booking != null){
 
 export const changeStatus = async (req, res, next) => {
     try {
+        //console.log('inside the function')
+        const docId = req.userId
         const bookingId = req.params.bookingId;
         const newStatus = req.body.status;
 
+        //console.log(docId)
         
-        const booking = findOne({_id :bookingId});
-
+        const booking = await Booking.findOne({_id :bookingId, doctor : docId});
+       
         if (!booking) {
             return res.status(404).json({ message: 'Booking not found' });
         }
 
         booking.status = newStatus;
+
+        await booking.save({validateBeforeSave : false})
 
         return res.status(200).json({ message: 'Booking status updated successfully', booking });
     } catch (error) {
